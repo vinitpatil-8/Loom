@@ -30,7 +30,7 @@ def read_study_data():
 
 # shows the study data of the date user entered
 @app.get("/study/{study_day}", status_code=status.HTTP_200_OK)
-def read_study_day(study_day : str):
+def read_study_day(study_day : date):
     # the study data of the day
     output_data: List[Study] = []
 
@@ -48,10 +48,15 @@ def read_study_day(study_day : str):
 
 # update the study data of the date user entered
 @app.put("/study/{study_day}", status_code=status.HTTP_200_OK)
-def update_study_time(study_day : str):
+def update_study_time(study_day : date, updated_study: Study):
     for index, study in enumerate(study_data):
-            if study.day == study_day:
-                study_data[index] = update_study_time
+        if study.day == study_day:
+            study_data[index] = updated_study
+            return updated_study
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"No study logs found for the date: {study_day}",
+    )
 
 
 # entering study data
