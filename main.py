@@ -7,7 +7,7 @@ from datetime import date
 # model for study data
 class Study(BaseModel):
     # the date on which the data is getting registered
-    day: date = Field(default_factory=date.today, description="Date of the study entry", json_schema_extra={"example": "2026-08-23"})
+    day: date = Field(default_factory=lambda: date.today(), description="Date of the study entry", json_schema_extra={"example": "2026-08-23"})
     # the subject
     subject: str = Field(..., json_schema_extra={"example": "Mathematics"})
     # hours studied
@@ -47,10 +47,10 @@ def read_study_day(study_day : date):
     return output_data
 
 # update the study data of the date user entered
-@app.put("/study/{study_day}", status_code=status.HTTP_200_OK)
-def update_study_time(study_day : date, updated_study: Study):
+@app.put("/study/{study_day}/{subject}", status_code=status.HTTP_200_OK)
+def update_study_time(study_day : date, subject : str, updated_study: Study):
     for index, study in enumerate(study_data):
-        if study.day == study_day:
+        if study.day == study_day and study.subject.lower() == subject.lower():
             study_data[index] = updated_study
             return updated_study
     raise HTTPException(
@@ -64,3 +64,7 @@ def update_study_time(study_day : date, updated_study: Study):
 def post_study_time(study: Study):
     study_data.append(study)
     return {"message": f"Logged {study.time} hours for {study.subject}"}
+
+
+
+# Testing remaining
