@@ -6,7 +6,7 @@ from datetime import date
 router = APIRouter()
 
 
-# model for study data
+# model for study data 
 class Study(BaseModel):
     # the date on which the data is getting registered
     day: date = Field(default_factory=lambda: date.today(), description="Date of the study entry")
